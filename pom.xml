@@ -24,10 +24,12 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <spring.version>5.3.17</spring.version>
     </properties>
 
     <modules>
         <module>lesson_1</module>
+        <module>les_2</module>
     </modules>
 
 </project>
