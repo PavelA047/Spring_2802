@@ -1,3 +1,5 @@
+package ru;
+
 public class Product {
     private Long id;
     private String title;
@@ -34,7 +36,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product{" +
+        return "ru.Product{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", cost=" + cost +
