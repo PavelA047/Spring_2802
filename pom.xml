@@ -30,6 +30,7 @@
     <modules>
         <module>lesson_1</module>
         <module>les_2</module>
+        <module>lesson_3</module>
     </modules>
 
 </project>
