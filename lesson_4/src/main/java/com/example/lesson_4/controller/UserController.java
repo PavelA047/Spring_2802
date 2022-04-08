@@ -3,13 +3,11 @@ package com.example.lesson_4.controller;
 import com.example.lesson_4.persist.User;
 import com.example.lesson_4.persist.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -32,8 +30,15 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String form(@PathVariable("id") long id, Model model) {
-        model.addAttribute("user", userRepository.findById(id));
+        model.addAttribute("user", userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User not found")));
         return "user_form";
+    }
+
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable("id") long id, Model model) {
+        userRepository.delete(id);
+        return "redirect:/user";
     }
 
     @GetMapping("/new")
@@ -53,5 +58,12 @@ public class UserController {
         }
         userRepository.save(user);
         return "redirect:/user";
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler
+    public String notFoundExceptionHandler(Model model, NotFoundException ex) {
+        model.addAttribute("message", ex.getMessage());
+        return "not_found";
     }
 }
