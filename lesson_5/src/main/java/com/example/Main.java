@@ -1,6 +1,7 @@
 package com.example;
 
 import com.example.product.model.Product;
+import com.example.product.model.ProductDao;
 import org.hibernate.cfg.Configuration;
 
 import javax.persistence.EntityManager;
@@ -9,12 +10,12 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        EntityManagerFactory entityManagerFactory = new Configuration()
-                .configure("hibernate.cfg.xml")
-                .buildSessionFactory();
-
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
+//        EntityManagerFactory entityManagerFactory = new Configuration()
+//                .configure("hibernate.cfg.xml")
+//                .buildSessionFactory();
+//
+//        EntityManager entityManager = entityManagerFactory.createEntityManager();
+//        entityManager.getTransaction().begin();
 
         // Insert
 //        entityManager.persist(new Product("Product 1", 1100L));
@@ -43,11 +44,24 @@ public class Main {
 //        entityManager.createQuery("delete from Product p where p.id = 6L")
 //                .executeUpdate();
 
+//        entityManager.getTransaction().commit();
+//        entityManager.close();
+//        entityManagerFactory.close();
 
+        ProductDao productDao = new ProductDao();
+        productDao.saveOrUpdate(new Product("Product 1", 1100L));
+        productDao.saveOrUpdate(new Product("Product 2", 1200L));
+        productDao.saveOrUpdate(new Product("Product 3", 1300L));
+        productDao.saveOrUpdate(new Product("Product 4", 1400L));
+        productDao.saveOrUpdate(new Product("Product 5", 1500L));
+        productDao.saveOrUpdate(new Product("Product 5", 1500000L));
 
+        productDao.delete(85L);
 
-        entityManager.getTransaction().commit();
-        entityManager.close();
-        entityManagerFactory.close();
+        System.out.println(productDao.findAll());
+
+        System.out.println(productDao.findById(86L));
+
+        productDao.close();
     }
 }
