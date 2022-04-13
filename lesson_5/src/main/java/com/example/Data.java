@@ -15,10 +15,17 @@ public class Data {
 
         entityManager.getTransaction().begin();
 
-        Consumer consumer = entityManager.find(Consumer.class, 10L);
-        consumer.getProductList().add(entityManager.find(Product.class, 106L));
-        consumer.getProductList().add(entityManager.find(Product.class, 105L));
-        consumer.getProductList().add(entityManager.find(Product.class, 104L));
+        Consumer consumer = entityManager.find(Consumer.class, 15L);
+        consumer.getProductList().add(entityManager.find(Product.class, 108L));
+        consumer.getProductList().add(entityManager.find(Product.class, 109L));
+        consumer.getProductList().add(entityManager.find(Product.class, 110L));
+
+        consumer = entityManager.find(Consumer.class, 16L);
+        consumer.getProductList().add(entityManager.find(Product.class, 108L));
+        consumer.getProductList().add(entityManager.find(Product.class, 110L));
+
+        consumer = entityManager.find(Consumer.class, 17L);
+        consumer.getProductList().add(entityManager.find(Product.class, 109L));
 
         entityManager.getTransaction().commit();
         entityManager.close();

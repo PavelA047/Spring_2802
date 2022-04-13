@@ -8,7 +8,7 @@ public class Main {
         ApplicationContext context = new AnnotationConfigApplicationContext(AppConf.class);
         ConsumerService consumerService = context.getBean("consumerService", ConsumerService.class);
 
-        System.out.println(consumerService.getProductListByConsumerId(6L));
-        System.out.println(consumerService.getConsumerListByProductId(100L));
+        System.out.println(consumerService.getProductListByConsumerId(15L));
+        System.out.println(consumerService.getConsumerListByProductId(108L));
     }
 }
