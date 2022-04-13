@@ -48,7 +48,11 @@ public class Main {
 //        entityManager.close();
 //        entityManagerFactory.close();
 
-        ProductDao productDao = new ProductDao();
+        EntityManagerFactory entityManagerFactory = new Configuration()
+                .configure("hibernate.cfg.xml")
+                .buildSessionFactory();
+
+        ProductDao productDao = new ProductDao(entityManagerFactory);
         productDao.saveOrUpdate(new Product("Product 1", 1100L));
         productDao.saveOrUpdate(new Product("Product 2", 1200L));
         productDao.saveOrUpdate(new Product("Product 3", 1300L));
@@ -56,12 +60,12 @@ public class Main {
         productDao.saveOrUpdate(new Product("Product 5", 1500L));
         productDao.saveOrUpdate(new Product("Product 5", 1500000L));
 
-        productDao.delete(85L);
+        productDao.delete(98L);
 
         System.out.println(productDao.findAll());
 
-        System.out.println(productDao.findById(86L));
+        System.out.println(productDao.findById(99L));
 
-        productDao.close();
+        entityManagerFactory.close();
     }
 }

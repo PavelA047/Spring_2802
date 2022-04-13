@@ -1,7 +1,5 @@
 package com.example.product.model;
 
-import org.hibernate.cfg.Configuration;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
@@ -9,33 +7,44 @@ import java.util.List;
 
 public class ProductDao {
 
-    private static final EntityManagerFactory entityManagerFactory;
-    private static final EntityManager entityManager;
+    private final EntityManagerFactory entityManagerFactory;
 
-    static {
-        entityManagerFactory = new Configuration()
-                .configure("hibernate.cfg.xml")
-                .buildSessionFactory();
-
-        entityManager = entityManagerFactory.createEntityManager();
+    public ProductDao(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     public Product findById(Long id) {
-        return entityManager.find(Product.class, id);
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            return entityManager.find(Product.class, id);
+        } finally {
+            entityManager.close();
+        }
     }
 
     public List<Product> findAll() {
-        return entityManager.createQuery("select p from Product p", Product.class)
-                .getResultList();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            return entityManager.createQuery("select p from Product p", Product.class)
+                    .getResultList();
+        } finally {
+            entityManager.close();
+        }
     }
 
     public void delete(Long id) {
-        entityManager.getTransaction().begin();
-        entityManager.remove(entityManager.find(Product.class, id));
-        entityManager.getTransaction().commit();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            entityManager.remove(entityManager.find(Product.class, id));
+            entityManager.getTransaction().commit();
+        } finally {
+            entityManager.close();
+        }
     }
 
     public void saveOrUpdate(Product product) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             Product prod = entityManager.createQuery("select p from Product p where p.title = :title", Product.class)
                     .setParameter("title", product.getTitle())
@@ -48,6 +57,8 @@ public class ProductDao {
             entityManager.getTransaction().begin();
             entityManager.persist(product);
             entityManager.getTransaction().commit();
+        } finally {
+            entityManager.close();
         }
 //        List<Product> products = findAll();
 //        if (products.size() != 0) {
@@ -64,10 +75,5 @@ public class ProductDao {
 //        entityManager.getTransaction().begin();
 //        entityManager.persist(product);
 //        entityManager.getTransaction().commit();
-    }
-
-    public void close() {
-        entityManager.close();
-        entityManagerFactory.close();
     }
 }
