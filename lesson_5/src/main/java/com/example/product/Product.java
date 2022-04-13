@@ -1,6 +1,10 @@
-package com.example.product.model;
+package com.example.product;
+
+import com.example.consumer.Consumer;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -16,13 +20,27 @@ public class Product {
     @Column(nullable = false)
     private Long cost;
 
+    @ManyToMany
+    @JoinTable(name = "consumers_products",
+            joinColumns = @JoinColumn(name = "products_id"),
+            inverseJoinColumns = @JoinColumn(name = "consumer_id")
+    )
+    private List<Consumer> consumerList = new ArrayList<>();
+
     public Product(String title, Long cost) {
         this.title = title;
         this.cost = cost;
     }
 
     public Product() {
+    }
 
+    public List<Consumer> getConsumerList() {
+        return consumerList;
+    }
+
+    public void setConsumerList(List<Consumer> consumerList) {
+        this.consumerList = consumerList;
     }
 
     public Long getId() {
