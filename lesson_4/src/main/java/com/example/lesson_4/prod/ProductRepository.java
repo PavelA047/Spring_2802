@@ -1,45 +1,58 @@
 package com.example.lesson_4.prod;
 
+import com.example.lesson_4.persist.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
-@Repository
-public class ProductRepository {
-    private final Map<Long, Product> productMap = new ConcurrentHashMap<>();
-    private final AtomicLong identity = new AtomicLong(0);
+//@Repository
+public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    @PostConstruct
-    public void init() {
-        this.save(new Product("Product 1", 1000L));
-        this.save(new Product("Product 2", 1500L));
-        this.save(new Product("Product 3", 2000L));
-        this.save(new Product("Product 4", 2500L));
-        this.save(new Product("Product 5", 3000L));
-    }
+    List<Product> findUserByTitleLike(@Param("title") String title);
 
-    public List<Product> findAll() {
-        return new ArrayList<>(productMap.values());
-    }
+    List<Product> findByCostGreaterThanEqual(@Param("cost") Long cost);
 
-    public Product getProductByID(long id) {
-        return productMap.get(id);
-    }
+    List<Product> findByCostLessThanEqual(@Param("cost") Long cost);
 
-    public Product save(Product product) {
-        if (product.getId() == null) {
-            product.setId(identity.incrementAndGet());
-        }
-        productMap.put(product.getId(), product);
-        return product;
-    }
+    List<Product> findByCostBetween(@Param("productMinFilter") Long minCost, @Param("productMaxFilter") Long maxCost);
 
-    public void delete(long id) {
-        productMap.remove(id);
-    }
+    @Query("select p from Product p where p.title like :title and p.cost between :minCost and :maxCost")
+    List<Product> findByTitleAndCostBetweenMinAndMax(@Param("title") String title, @Param("minCost") Long minCost, @Param("maxCost") Long maxCost);
+
+    @Query("select p from Product p where p.title like :title and p.cost >= :minCost")
+    List<Product> findByTitleAndCostGreaterThenEqual(@Param("title") String title, @Param("minCost") Long minCost);
+
+    @Query("select p from Product p where p.title like :title and p.cost <= :maxCost")
+    List<Product> findByTitleAndCostLessThenEqual(@Param("title") String title, @Param("maxCost") Long maxCost);
+
+//    @PersistenceContext
+//    private EntityManager entityManager;
+//
+//    public List<Product> findAll() {
+//        return entityManager.createQuery("select p from Product p", Product.class)
+//                .getResultList();
+//    }
+//
+//    public Product getProductByID(long id) {
+//        return entityManager.find(Product.class, id);
+//    }
+//
+//    @Transactional
+//    public Product save(Product product) {
+//        if (product.getId() == null) {
+//            entityManager.persist(product);
+//        } else entityManager.merge(product);
+//        return product;
+//    }
+//
+//    @Transactional
+//    public void delete(long id) {
+//        entityManager.remove(entityManager.find(Product.class, id));
+//    }
 }

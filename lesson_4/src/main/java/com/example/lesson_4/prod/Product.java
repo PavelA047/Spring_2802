@@ -1,18 +1,29 @@
 package com.example.lesson_4.prod;
 
+import javax.persistence.*;
 import javax.validation.constraints.*;
 
+@Entity
+@Table(name = "products")
 public class Product {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
     private Long id;
 
     @NotBlank
+    @Column(name = "title", nullable = false)
     private String title;
 
     @Min(value = 100L)
     @Max(value = 10000L)
     @NotNull
+    @Column(name = "cost")
     private Long cost;
+
+    public Product() {
+    }
 
     public Product(String title, Long cost) {
         this.title = title;
