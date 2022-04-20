@@ -1,7 +1,7 @@
-package com.example.lesson_4.prod;
+package com.example.lesson_4.persist;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "products")
@@ -12,20 +12,22 @@ public class Product {
     @Column(name = "product_id")
     private Long id;
 
-    @NotBlank
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Min(value = 100L)
-    @Max(value = 10000L)
-    @NotNull
     @Column(name = "cost")
-    private Long cost;
+    private BigDecimal cost;
 
     public Product() {
     }
 
-    public Product(String title, Long cost) {
+    public Product(String title, BigDecimal cost) {
+        this.title = title;
+        this.cost = cost;
+    }
+
+    public Product(Long id, String title, BigDecimal cost) {
+        this.id = id;
         this.title = title;
         this.cost = cost;
     }
@@ -46,11 +48,11 @@ public class Product {
         this.title = title;
     }
 
-    public Long getCost() {
+    public BigDecimal getCost() {
         return cost;
     }
 
-    public void setCost(Long cost) {
+    public void setCost(BigDecimal cost) {
         this.cost = cost;
     }
 }
