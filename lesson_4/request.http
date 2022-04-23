@@ -1,0 +1,23 @@
+GET http://localhost:8080/rest/v1/product/all
+
+###
+
+POST http://localhost:8080/rest/v1/product
+Content-Type: application/json
+
+{
+  "id": 20,
+  "title": "ductpro555555",
+  "cost": 5005
+}
+
+###
+
+PUT http://localhost:8080/rest/v1/product
+Content-Type: application/json
+
+{
+  "id": 20,
+  "title": "duc555555",
+  "cost": 5005
+}

@@ -42,7 +42,9 @@ public class ProductController {
                 .orElse(null);
         int pageValue = page.orElse(1) - 1;
         int sizeValue = size.orElse(5);
-        String sortValue = sort.orElse("id");
+        String sortValue = sort
+                .filter(s -> !s.isBlank())
+                .orElse("id");
 
         model.addAttribute("products", productService.findProductsByFilter(productFilterValue,
                 productMinFilterValue,
