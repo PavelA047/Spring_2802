@@ -1,7 +1,7 @@
 package com.example.lesson_4.controller;
 
-import com.example.lesson_4.persist.User;
-import com.example.lesson_4.persist.UserRepository;
+import com.example.lesson_4.dto.UserDto;
+import com.example.lesson_4.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -10,45 +10,61 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RequestMapping("/user")
 @Controller
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping
-    public String listPage(Model model) {
-        model.addAttribute("users", userRepository.findAll());
+    public String listPage(@RequestParam Optional<String> usernameFilter,
+                           @RequestParam Optional<String> emailFilter,
+                           @RequestParam Optional<Integer> page,
+                           @RequestParam Optional<Integer> size,
+                           @RequestParam Optional<String> sortField,
+                           Model model) {
+        String usernameFilterValue = usernameFilter
+                .filter(s -> !s.isBlank())
+                .orElse(null);
+        String emailFilterValue = emailFilter
+                .filter(s -> !s.isBlank())
+                .orElse(null);
+        Integer pageValue = page.orElse(1) - 1;
+        Integer sizeValue = size.orElse(3);
+        String sortFieldValue = sortField
+                .filter(s -> !s.isBlank())
+                .orElse("id");
+        model.addAttribute("users", userService.findUsersByFilter(
+                usernameFilterValue,
+                emailFilterValue,
+                pageValue,
+                sizeValue,
+                sortFieldValue));
         return "user";
     }
 
     @GetMapping("/{id}")
-    public String form(@PathVariable("id") long id, Model model) {
-        model.addAttribute("user", userRepository.findById(id)
+    public String form(@PathVariable long id, Model model) {
+        model.addAttribute("user", userService.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found")));
         return "user_form";
     }
 
-    @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") long id, Model model) {
-        userRepository.delete(id);
-        return "redirect:/user";
-    }
-
     @GetMapping("/new")
     public String form(Model model) {
-        model.addAttribute("user", new User(""));
+        model.addAttribute("user", new UserDto());
         return "user_form";
     }
 
     @PostMapping
-    public String save(@Valid User user, BindingResult binding) {
+    public String save(@Valid @ModelAttribute("user") UserDto user, BindingResult binding) {
         if (binding.hasErrors()) {
             return "user_form";
         }
@@ -56,7 +72,13 @@ public class UserController {
             binding.rejectValue("password", "", "Password not match");
             return "user_form";
         }
-        userRepository.save(user);
+        userService.save(user);
+        return "redirect:/user";
+    }
+
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable long id) {
+        userService.deleteById(id);
         return "redirect:/user";
     }
 

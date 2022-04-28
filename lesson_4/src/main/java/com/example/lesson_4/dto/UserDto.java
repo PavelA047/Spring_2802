@@ -1,28 +1,33 @@
-package com.example.lesson_4.persist;
+package com.example.lesson_4.dto;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Entity
-@Table(name = "users")
-public class User {
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
-    @Id
-    @GeneratedValue
+public class UserDto {
+
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @NotBlank
     private String username;
 
-    @Column(nullable = false, unique = true)
+    @Email
+    @NotBlank
     private String email;
 
-    @Column(nullable = false, length = 512)
+    @Pattern(regexp = "^(?=.*?[0-9])(?=.*?[A-Z]).{8,}$", message = "Password too simple")
+    @NotBlank
     private String password;
 
-    public User() {
+    @JsonIgnore
+    private String matchingPassword;
+
+    public UserDto() {
     }
 
-    public User(Long id, String username, String email, String password) {
+    public UserDto(Long id, String username, String email, String password) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -59,5 +64,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getMatchingPassword() {
+        return matchingPassword;
+    }
+
+    public void setMatchingPassword(String matchingPassword) {
+        this.matchingPassword = matchingPassword;
     }
 }
