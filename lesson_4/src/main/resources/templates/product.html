@@ -75,7 +75,7 @@
                 <ul class="pagination">
                     <li th:classappend="${products.isFirst()} ? 'disabled'"
                         class="page-item">
-                        <a th:replace="fragments/pagination.html :: pagination (${products.number}, ${products.size})"></a>
+                        <a th:replace="fragments/pagination.html :: pagination (${products.number}, ${products.size}, Previous)"></a>
                     </li>
 
                     <li th:each="num : ${#numbers.sequence(1, products.totalPages)}"
@@ -90,7 +90,7 @@
 
                     <li th:classappend="${products.isLast()} ? 'disabled'"
                         class="page-item">
-                        <a th:replace="fragments/pagination.html :: pagination (${products.number + 2}, ${products.size})"></a>
+                        <a th:replace="fragments/pagination.html :: pagination (${products.number + 2}, ${products.size}, Next)"></a>
                     </li>
                 </ul>
             </nav>

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,10 +18,13 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder encoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository,
+                           PasswordEncoder encoder) {
         this.userRepository = userRepository;
+        this.encoder = encoder;
     }
 
     @Override
@@ -45,12 +49,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto save(UserDto user) {
         return userToDto(userRepository.save(
-                        new User(
-                                user.getId(),
-                                user.getUsername(),
-                                user.getEmail(),
-                                user.getPassword()
-                        )));
+                new User(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getEmail(),
+                        encoder.encode(user.getPassword()),
+                        user.getRoleSet()
+                )));
     }
 
     @Override
@@ -59,6 +64,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private static UserDto userToDto(User user) {
-        return new UserDto(user.getId(), user.getUsername(), user.getEmail(), null);
+        return new UserDto(user.getId(), user.getUsername(), user.getEmail(), null, user.getRoleSet());
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
 
@@ -19,4 +20,5 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     List<User> findUserByFilter(@Param("username") String username,
                                 @Param("email") String email);
 
+    Optional<User> findUserByUsername(@Param("username") String username);
 }

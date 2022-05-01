@@ -1,6 +1,7 @@
 package com.example.lesson_4.controller;
 
 import com.example.lesson_4.dto.UserDto;
+import com.example.lesson_4.service.RoleService;
 import com.example.lesson_4.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,9 +19,12 @@ public class UserController {
 
     private final UserService userService;
 
+    private final RoleService roleService;
+
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @GetMapping
@@ -52,6 +56,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String form(@PathVariable long id, Model model) {
+        model.addAttribute("roles", roleService.findAll());
         model.addAttribute("user", userService.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found")));
         return "user_form";
@@ -59,17 +64,20 @@ public class UserController {
 
     @GetMapping("/new")
     public String form(Model model) {
+        model.addAttribute("roles", roleService.findAll());
         model.addAttribute("user", new UserDto());
         return "user_form";
     }
 
     @PostMapping
-    public String save(@Valid @ModelAttribute("user") UserDto user, BindingResult binding) {
+    public String save(@Valid @ModelAttribute("user") UserDto user, BindingResult binding, Model model) {
         if (binding.hasErrors()) {
+            model.addAttribute("roles", roleService.findAll());
             return "user_form";
         }
         if (!user.getPassword().equals(user.getMatchingPassword())) {
             binding.rejectValue("password", "", "Password not match");
+            model.addAttribute("roles", roleService.findAll());
             return "user_form";
         }
         userService.save(user);

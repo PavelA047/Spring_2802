@@ -1,8 +1,8 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
 
-<a th:fragment="pagination (page, size)" class="page-link" th:href="@{/product(page=${page}, size=${size},
+<a th:fragment="pagination (page, size, button)" class="page-link" th:href="@{/product(page=${page}, size=${size},
                         productFilter=${param.productFilter}, productMinFilter=${param.productMinFilter},
-                        productMaxFilter=${param.productMaxFilter}, sort=${param.sort})}" tabindex="-1">Previous</a>
+                        productMaxFilter=${param.productMaxFilter}, sort=${param.sort})}" tabindex="-1">[[${button}]]</a>
 
 </html>
