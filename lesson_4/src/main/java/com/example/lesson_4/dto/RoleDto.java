@@ -1,29 +1,28 @@
-package com.example.lesson_4.persist;
+package com.example.lesson_4.dto;
 
-import javax.persistence.*;
-import java.util.*;
+import com.example.lesson_4.persist.User;
 
-@Entity
-@Table(name = "roles")
-public class Role {
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class RoleDto {
+
     private Long id;
 
-    @Column(nullable = false)
     private String roleName;
+
+    private Set<User> userList = new HashSet<>();
+
+    public RoleDto(Long id, String roleName, Set<User> userList) {
+        this.id = id;
+        this.roleName = roleName;
+        this.userList = userList;
+    }
 
     public Long getId() {
         return id;
     }
-
-    @ManyToMany
-    @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "role_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private Set<User> userList = new HashSet<>();
 
     public Set<User> getUserList() {
         return userList;
@@ -49,7 +48,7 @@ public class Role {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Role role = (Role) o;
+        RoleDto role = (RoleDto) o;
         return id.equals(role.id);
     }
 
