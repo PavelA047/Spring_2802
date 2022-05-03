@@ -1,5 +1,7 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">>
 
 <head th:replace="fragments/head.html :: head">
 </head>
@@ -45,7 +47,7 @@
                     <th th:replace="fragments/sort_header.html :: sort_header ('Id', 'id')"></th>
                     <th th:replace="fragments/sort_header.html :: sort_header ('Title of product', 'title')"></th>
                     <th th:replace="fragments/sort_header.html :: sort_header ('Cost', 'cost')"></th>
-                    <th scope="col">Actions</th>
+                    <th sec:authorize="hasAnyRole('SUPER_ADMIN', 'ADMIN')" scope="col">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -53,7 +55,7 @@
                     <th scope="row" th:text="${product.id}">1</th>
                     <td th:text="${product.title}">Alex</td>
                     <td th:text="${product.cost}"></td>
-                    <td th:unless="${products.isEmpty()}">
+                    <td sec:authorize="hasAnyRole('SUPER_ADMIN', 'ADMIN')">
                         <a class="btn btn-success" th:href="@{/product/{id}(id = ${product.id})}"><i
                                 class="fas fa-edit"></i></a>
                         <form class="d-inline" th:method="delete" th:action="@{/product/{id}(id = ${product.id})}">

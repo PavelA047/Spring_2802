@@ -6,6 +6,7 @@ import com.example.lesson_4.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
@@ -53,6 +54,7 @@ public class UserResource {
                 .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
+    @Secured("ROLE_SUPER_ADMIN")
     @PostMapping
     public UserDto create(@RequestBody UserDto user) {
         if (user.getId() != null) {
@@ -61,6 +63,7 @@ public class UserResource {
         return userService.save(user);
     }
 
+    @Secured("ROLE_SUPER_ADMIN")
     @PutMapping
     public UserDto update(@RequestBody UserDto user) {
         if (user.getId() == null) {

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
@@ -58,6 +59,7 @@ public class ProductResource {
         return productService.findProductById(id).orElseThrow(() -> new NotFoundException("Product not found"));
     }
 
+    @Secured({"ROLE_SUPER_ADMIN", "RILE_ADMIN"})
     @PostMapping
     public ProductDto create(@RequestBody ProductDto product) {
         if (product.getId() != null) {
@@ -66,6 +68,7 @@ public class ProductResource {
         return productService.saveProduct(product);
     }
 
+    @Secured({"ROLE_SUPER_ADMIN", "RILE_ADMIN"})
     @PutMapping
     public ProductDto update(@RequestBody ProductDto product) {
         if (product.getId() == null) {

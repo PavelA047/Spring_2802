@@ -53,11 +53,11 @@ public class Role {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Role role = (Role) o;
-        return Objects.equals(id, role.id) && Objects.equals(roleName, role.roleName) && Objects.equals(userList, role.userList);
+        return id.equals(role.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, roleName, userList);
+        return Objects.hash(id);
     }
 }

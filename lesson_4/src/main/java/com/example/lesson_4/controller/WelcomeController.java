@@ -12,4 +12,9 @@ public class WelcomeController {
     public String listPage() {
         return "welcome";
     }
+
+    @GetMapping("/access_denied")
+    public String accessDenied() {
+        return "access_denied";
+    }
 }

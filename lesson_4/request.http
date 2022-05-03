@@ -1,23 +1,51 @@
+GET http://localhost:8080/rest/v1/user/all
+
+###
+
+GET http://localhost:8080/rest/v1/user/4/id
+
+###
+
 GET http://localhost:8080/rest/v1/product/all
 
 ###
 
-POST http://localhost:8080/rest/v1/product
+GET http://localhost:8080/rest/v1/product/7/id
+
+###
+
+POST http://localhost:8080/rest/v1/user
+Authorization: Basic 444 rrrRRR111
 Content-Type: application/json
 
 {
-  "id": 20,
-  "title": "ductpro555555",
-  "cost": 5005
+  "username": "userTestttttttttt",
+  "email": "userTestttttttttt@mail.ru",
+  "password": "rrrRRR111"
 }
 
 ###
 
-PUT http://localhost:8080/rest/v1/product
+PUT http://localhost:8080/rest/v1/user
+Authorization: Basic 444 rrrRRR111
 Content-Type: application/json
 
 {
-  "id": 20,
-  "title": "duc555555",
-  "cost": 5005
+  "id": "3",
+  "username": "222",
+  "email": "123@mail.ru",
+  "password": "rrrRRR1111"
 }
+
+###
+
+POST http://localhost:8080/rest/v1/product
+Authorization: Basic 444 rrrRRR111
+Content-Type: application/json
+
+{
+"title": "testProduct",
+"cost": "606"
+}
+
+###

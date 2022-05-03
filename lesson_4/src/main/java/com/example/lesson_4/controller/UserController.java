@@ -5,6 +5,7 @@ import com.example.lesson_4.service.RoleService;
 import com.example.lesson_4.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -69,6 +70,7 @@ public class UserController {
         return "user_form";
     }
 
+    @Secured("ROLE_SUPER_ADMIN")
     @PostMapping
     public String save(@Valid @ModelAttribute("user") UserDto user, BindingResult binding, Model model) {
         if (binding.hasErrors()) {
@@ -84,6 +86,7 @@ public class UserController {
         return "redirect:/user";
     }
 
+    @Secured("ROLE_SUPER_ADMIN")
     @DeleteMapping("/{id}")
     public String delete(@PathVariable long id) {
         userService.deleteById(id);
