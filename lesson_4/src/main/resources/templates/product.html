@@ -1,35 +1,14 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">>
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"/>
-    <title>EShop application</title>
+<head th:replace="fragments/head.html :: head">
 </head>
 
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">EShop</a>
-
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">List</a>
-            </li>
-        </ul>
-    </div>
+<nav th:replace="fragments/head.html :: navigation">
 </nav>
 
 <div class="container">
@@ -38,22 +17,45 @@
             <a class="btn btn-primary" th:href="@{/product/new}">Add Product</a>
         </div>
 
+        <div class="col-12 mt-3">
+            <form class="form-inline">
+
+                <div class="form-group mb-2 mr-2">
+                    <label for="productFilter" class="sr-only">Product filter</label>
+                    <input type="text" class="form-control" id="productFilter" th:value="${param.productFilter}"
+                           name="productFilter" placeholder="Product filter">
+                </div>
+                <div class="form-group mb-2 mr-2">
+                    <label for="productMinFilter" class="sr-only">Product Min Filter</label>
+                    <input type="text" class="form-control" id="productMinFilter" th:value="${param.productMinFilter}"
+                           name="productMinFilter" placeholder="Input min cost">
+                </div>
+                <div class="form-group mb-2 mr-2">
+                    <label for="productMaxFilter" class="sr-only">Product Max Filter</label>
+                    <input type="text" class="form-control" id="productMaxFilter" th:value="${param.productMaxFilter}"
+                           name="productMaxFilter" placeholder="Input max cost">
+                </div>
+
+                <button type="submit" class="btn btn-primary mb-2">Apply</button>
+            </form>
+        </div>
+
         <div class="col-12">
             <table class="table table-bordered my-2">
                 <thead>
                 <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Title of product</th>
-                    <th scope="col">Cost</th>
-                    <th scope="col">Actions</th>
+                    <th th:replace="fragments/sort_header.html :: sort_header ('Id', 'id')"></th>
+                    <th th:replace="fragments/sort_header.html :: sort_header ('Title of product', 'title')"></th>
+                    <th th:replace="fragments/sort_header.html :: sort_header ('Cost', 'cost')"></th>
+                    <th sec:authorize="hasAnyRole('SUPER_ADMIN', 'ADMIN')" scope="col">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="product : ${products}">
+                <tr th:unless="${products.isEmpty()}" th:each="product : ${products}">
                     <th scope="row" th:text="${product.id}">1</th>
                     <td th:text="${product.title}">Alex</td>
                     <td th:text="${product.cost}"></td>
-                    <td>
+                    <td sec:authorize="hasAnyRole('SUPER_ADMIN', 'ADMIN')">
                         <a class="btn btn-success" th:href="@{/product/{id}(id = ${product.id})}"><i
                                 class="fas fa-edit"></i></a>
                         <form class="d-inline" th:method="delete" th:action="@{/product/{id}(id = ${product.id})}">
@@ -61,22 +63,45 @@
                         </form>
                     </td>
                 </tr>
+                <tr th:if="${products.isEmpty()}">
+                    <td colspan="4">
+                        No data
+                    </td>
+                </tr>
                 </tbody>
             </table>
+        </div>
+
+        <div th:unless="${products.isEmpty()}" class="col-12">
+            <nav aria-label="...">
+                <ul class="pagination">
+                    <li th:classappend="${products.isFirst()} ? 'disabled'"
+                        class="page-item">
+                        <a th:replace="fragments/pagination.html :: pagination (${products.number}, ${products.size}, Previous)"></a>
+                    </li>
+
+                    <li th:each="num : ${#numbers.sequence(1, products.totalPages)}"
+                        th:classappend="${num == products.number + 1} ? 'active'"
+                        class="page-item">
+                        <a class="page-link" th:href="@{/product(page=${num}, size=${products.size},
+                        productFilter=${param.productFilter}, productMinFilter=${param.productMinFilter},
+                        productMaxFilter=${param.productMaxFilter}, sort=${param.sort})}">[[${num}]]<span
+                                th:if="${num == products.number + 1}" class="sr-only">(current)</span>
+                        </a>
+                    </li>
+
+                    <li th:classappend="${products.isLast()} ? 'disabled'"
+                        class="page-item">
+                        <a th:replace="fragments/pagination.html :: pagination (${products.number + 2}, ${products.size}, Next)"></a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </div>
 
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
+<th:block th:replace="fragments/footer.html :: scripts">
+</th:block>
+
 </body>
 </html>

@@ -1,6 +1,7 @@
-package com.example.product.model;
+package com.example.lesson_4.persist;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "products")
@@ -8,21 +9,27 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(nullable = false)
-    private Long cost;
+    @Column(name = "cost")
+    private BigDecimal cost;
 
-    public Product(String title, Long cost) {
+    public Product() {
+    }
+
+    public Product(String title, BigDecimal cost) {
         this.title = title;
         this.cost = cost;
     }
 
-    public Product() {
-
+    public Product(Long id, String title, BigDecimal cost) {
+        this.id = id;
+        this.title = title;
+        this.cost = cost;
     }
 
     public Long getId() {
@@ -41,20 +48,11 @@ public class Product {
         this.title = title;
     }
 
-    public Long getCost() {
+    public BigDecimal getCost() {
         return cost;
     }
 
-    public void setCost(Long cost) {
+    public void setCost(BigDecimal cost) {
         this.cost = cost;
-    }
-
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", cost=" + cost +
-                '}';
     }
 }
